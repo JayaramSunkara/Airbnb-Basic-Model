@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const favoriteDataPath = path.join(__dirname, "../data/favorite.js");
+const favoriteDataPath = path.join(__dirname, "../data/favorite.json");
 
 export async function readAllFav() {
   try {
