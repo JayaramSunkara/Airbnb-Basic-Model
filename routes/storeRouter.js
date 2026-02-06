@@ -1,4 +1,22 @@
-import express from 'express'
-const storeRouter = express.Router()
+import express from "express";
+import {
+  getBookings,
+  getFavorites,
+  getHomeDetails,
+  getHomePage,
+  getHomesList,
+  postAddFavorites,
+  postDeleteFavorites,
+} from "../controllers/storeController.js";
+const storeRouter = express.Router();
 
-export default storeRouter
+storeRouter.get("/", getHomePage);
+storeRouter.get("/homes", getHomesList);
+storeRouter.get("/bookings", getBookings);
+storeRouter.get("/favourites", getFavorites);
+storeRouter.get("/homes/:homeId", getHomeDetails);
+
+storeRouter.post("/favourites", postAddFavorites);
+storeRouter.post("/favourites/delete/:homeId", postDeleteFavorites);
+
+export default storeRouter;

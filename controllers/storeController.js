@@ -1,5 +1,5 @@
-import { deleteFav, readAllFav, updateFav } from "../models/favorite";
-import { findById, readAll } from "../models/home";
+import { deleteFav, readAllFav, updateFav } from "../models/favorite.js";
+import { findById, readAll } from "../models/home.js";
 
 export async function getHomePage(req, res, next) {
   const registeredHomes = await readAll();
@@ -38,11 +38,11 @@ export async function getFavorites(req, res, next) {
     const favorites = await readAllFav();
     const registeredHomes = await readAll();
 
-    const favoriteHomes = registeredHomes.filter((home) =>
+    const favouriteHomes = registeredHomes.filter((home) =>
       favorites.includes(home.id),
     );
     res.render("store/favourite-list.ejs", {
-      favoriteHomes,
+      favouriteHomes,
       pageTitle: "My Favourites",
       currentPage: "favourites",
     });
@@ -69,7 +69,7 @@ export async function postAddFavorites(req, res, next) {
 
 export async function postDeleteFavorites(req, res, next) {
   try {
-    await deleteFav(req.params.id);
+    await deleteFav(req.params.homeId);
   } catch (error) {
     console.error("Unable to delete from favorites: ", error.message);
   }
