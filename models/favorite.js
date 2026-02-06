@@ -1,12 +1,3 @@
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const favoriteDataPath = path.join(__dirname, "../data/favorite.js");
-
 export async function readAllFav() {
   try {
     const favoriteHomes = await fs.readFile(favoriteDataPath, "utf8");
