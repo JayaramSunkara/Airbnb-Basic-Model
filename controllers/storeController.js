@@ -39,8 +39,9 @@ export async function getFavorites(req, res, next) {
     const registeredHomes = await readAll();
 
     const favouriteHomes = registeredHomes.filter((home) =>
-      favorites.includes(home.id),
+      favorites.some((fav) => fav.houseId.toString() === home.id.toString()),
     );
+
     res.render("store/favourite-list.ejs", {
       favouriteHomes,
       pageTitle: "My Favourites",

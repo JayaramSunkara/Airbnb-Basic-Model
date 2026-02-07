@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import favorite from "./favoriteSchema.js";
+import Favorite from "./favoriteSchema.js";
 
 const homeSchema = new mongoose.Schema(
   {
