@@ -14,7 +14,7 @@ export async function mongoConnect() {
   return _db;
 }
 
-export function get_() {
+export function getDB() {
   if (!_db) throw new Error("DB not connected");
   return _db;
 }
