@@ -1,44 +1,27 @@
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const favoriteDataPath = path.join(__dirname, "../data/favorite.js");
+import Favorite from "./favoriteSchema.js";
 
 export async function readAllFav() {
   try {
-    const favoriteHomes = await fs.readFile(favoriteDataPath, "utf8");
-    return JSON.parse(favoriteHomes);
+    return await Favorite.find();
   } catch (error) {
-    console.error("Error while reading favorites file:", error.message);
+    console.error("Error while reading favorite in DB", error.message);
     return [];
   }
 }
 
 export async function updateFav(homeId) {
-  let favoriteHomes = await readAllFav();
-  if (favoriteHomes.includes(homeId)) return "Home is already marked favourite";
-  favoriteHomes.push(homeId);
   try {
-    await fs.writeFile(favoriteDataPath, JSON.stringify(favoriteHomes), "utf8");
+    await Favorite.create({ houseId: homeId });
     return "Added to favourites";
   } catch (error) {
-    console.error("Error writing file: ", error.message);
+    console.error("Error writing favorite in DB: ", error.message);
     return "Failed to update favourites";
   }
 }
 
 export async function deleteFav(homeId) {
-  let favoriteHomes = await readAllFav();
-  favoriteHomes = favoriteHomes.filter((id) => id !== homeId);
   try {
-    await fs.writeFile(
-      favoriteDataPath,
-      JSON.stringify(favoriteHomes),
-      "utf-8",
-    );
+    await Favorite.findOneAndDelete({houseId: homeId})
   } catch (error) {
     console.error("Error writing file: ", error.message);
     return "Failed to delete favourites";

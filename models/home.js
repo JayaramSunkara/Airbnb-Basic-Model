@@ -1,28 +1,13 @@
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
+import Home from "./homeSchema.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const homeDataPath = path.join(__dirname, "../data/homes.json");
-
-export function create({ houseName, price, location, rating, photoUrl }) {
-  return {
-    id: null,
-    houseName,
-    price,
-    location,
-    rating,
-    photoUrl,
-    createdAt: new Date(),
-  };
+export async function create({ houseName, price, location, rating, photoUrl }) {
+  await Home.create({ houseName, price, location, rating, photoUrl });
 }
 
 export async function readAll() {
   try {
-    const data = await fs.readFile(homeDataPath, "utf8");
-    return JSON.parse(data);
+    const data = await Home.find();
+    return data;
   } catch (error) {
     console.error(error);
     return [];
@@ -30,42 +15,28 @@ export async function readAll() {
 }
 
 export async function update(home) {
-  let registeredHomes = await readAll();
-  if (home.id) {
-    registeredHomes = registeredHomes.map((element) =>
-      element.id === home.id ? home : element,
-    );
-  } else {
-    home.id = Math.random().toString();
-    registeredHomes.push(home);
-  }
   try {
-    await fs.writeFile(
-      homeDataPath,
-      JSON.stringify(registeredHomes, null, 2),
-      "utf8",
-    );
+    const { id, ...data } = home;
+
+    await Home.findByIdAndUpdate(id, data, {
+      new: true,
+      runValidators: true,
+    });
+
     console.log("Writing to DB successful");
   } catch (error) {
-    console.error("Writing to file unsuccessful: ", error);
+    console.error("Writing to DB unsuccessful:", error.message);
   }
 }
 
 export async function deleteById(homeId) {
-  let registeredHomes = await readAll();
-  registeredHomes = registeredHomes.filter((home) => home.id !== homeId);
   try {
-    await fs.writeFile(
-      homeDataPath,
-      JSON.stringify(registeredHomes, null, 2),
-      "utf8",
-    );
+    await Home.findByIdAndDelete(homeId);
   } catch (error) {
     console.error("Writing to file not successful: ", error);
   }
 }
 
 export async function findById(homeId) {
-  const registeredHomes = await readAll();
-  return registeredHomes.find((home) => home.id === homeId);
+  return await Home.findById(homeId);
 }

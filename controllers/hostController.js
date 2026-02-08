@@ -25,8 +25,8 @@ export async function getAddHome(req, res, next) {
 }
 
 export async function postAddHome(req, res, next) {
-  const home = create(req.body);
-  await update(home);
+  const home = await create(req.body);
+  console.log("Home saved successfully");
   res.redirect("/host/host-home-list");
 }
 
@@ -39,7 +39,6 @@ export async function getEditHome(req, res, next) {
     console.log("Home not found");
     return res.redirect("/host/host-home-list");
   }
-  console.log(homeId, editing, home);
   res.render("host/edit-home", {
     home: home,
     pageTitle: "Edit your Home",
@@ -49,14 +48,18 @@ export async function getEditHome(req, res, next) {
 }
 
 export async function postEditHome(req, res, next) {
-  const home = create(req.body);
-  home.id = req.body.id;
+  const { id, houseName, price, location, rating, photoUrl } = req.body;
+  const home = { id, houseName, price, location, rating, photoUrl };
   await update(home);
   res.redirect("/host/host-home-list");
 }
 
 export async function deleteHome(req, res, next) {
   const homeId = req.params.homeId;
-  await deleteById(homeId);
-  res.redirect("/host/host-home-list");
+  try {
+    await deleteById(homeId);
+    res.redirect("/host/host-home-list");
+  } catch (error) {
+    console.error("Deletion failed: ", error.message);
+  }
 }
