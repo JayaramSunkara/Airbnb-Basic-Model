@@ -5,12 +5,12 @@ import { fileURLToPath } from "url";
 // External Modules
 import express from "express";
 import dotenv from "dotenv";
-import mongoose from "mongoose";
 
 // Local Modules
 import { page404 } from "./controllers/error.js";
 import storeRouter from "./routes/storeRouter.js";
 import hostRouter from "./routes/hostRouter.js";
+import { mongoConnect } from "./utils/dbUtil.js";
 
 const app = express();
 
@@ -32,15 +32,13 @@ app.use(page404);
 
 async function startServer() {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("MongoDB connected");
-
+    await mongoConnect();
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {
       console.log(`Server is running at http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error("Unable to connect to DB: ", error.message);
+    console.error("Unable to start server: ", error.message);
   }
 }
 
