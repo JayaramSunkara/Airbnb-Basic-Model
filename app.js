@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import ConnectMongoDBSession from "connect-mongodb-session";
 import session from "express-session";
+import multer from "multer";
 
 // Local Modules
 import { page404 } from "./controllers/error.js";
@@ -53,6 +54,13 @@ app.use((req, res, next) => {
 
 app.use(authRouter);
 app.use(storeRouter);
+app.use("/host", (req, res, next) => {
+  if (req.isLoggedIn) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+});
 app.use("/host", hostRouter);
 
 app.use(page404);
