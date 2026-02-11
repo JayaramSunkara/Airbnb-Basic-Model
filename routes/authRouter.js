@@ -1,10 +1,10 @@
 import express from "express";
-import { getLogin, getLogout, postLogin } from "../controllers/authController.js";
+import { getLogin, postLogin, postLogout } from "../controllers/authController.js";
 
 const authRouter = express.Router();
 
 authRouter.get("/login", getLogin);
 authRouter.post("/login", postLogin);
-authRouter.get("logout", getLogout);
+authRouter.post("/logout", postLogout);
 
 export default authRouter;

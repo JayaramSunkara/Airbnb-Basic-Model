@@ -13,7 +13,7 @@ export async function postLogin(req, res, next) {
   //req.isLoggedIn = true;
   res.redirect("/");
 }
-export async function getLogout(req, res, next) {
+export async function postLogout(req, res, next) {
   req.session.destroy(() => {
     res.redirect("/login");
   });
