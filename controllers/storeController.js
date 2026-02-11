@@ -7,6 +7,7 @@ export async function getHomePage(req, res, next) {
     registeredHomes,
     pageTitle: "airbnb Home",
     currentPage: "index",
+    isLoggedIn: req.isLoggedIn,
   });
 }
 
@@ -16,6 +17,7 @@ export async function getHomesList(req, res, next) {
     registeredHomes,
     pageTitle: "Homes List",
     currentPage: "Home",
+    isLoggedIn: req.isLoggedIn,
   });
 }
 
@@ -29,6 +31,7 @@ export async function getHomeDetails(req, res, next) {
       home: home,
       pageTitle: "Home Detail",
       currentPage: "Home",
+      isLoggedIn: req.isLoggedIn,
     });
   }
 }
@@ -46,6 +49,7 @@ export async function getFavorites(req, res, next) {
       favouriteHomes,
       pageTitle: "My Favourites",
       currentPage: "favourites",
+      isLoggedIn: req.isLoggedIn,
     });
   } catch (error) {
     console.error("Unable to get favorites: ", error.message);
@@ -56,6 +60,7 @@ export async function getBookings(req, res, next) {
   res.render("store/bookings.ejs", {
     pageTitle: "My Bookings",
     currentPage: "bookings",
+    isLoggedIn: req.isLoggedIn,
   });
 }
 

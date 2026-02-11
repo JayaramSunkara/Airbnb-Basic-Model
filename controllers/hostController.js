@@ -13,6 +13,7 @@ export async function getHomes(req, res, next) {
     registeredHomes,
     pageTitle: "Host Homes List",
     currentPage: "host-homes",
+    isLoggedIn: req.isLoggedIn,
   });
 }
 
@@ -21,6 +22,7 @@ export async function getAddHome(req, res, next) {
     pageTitle: "Add Home to airbnb",
     currentPage: "addHome",
     editing: false,
+    isLoggedIn: req.isLoggedIn
   });
 }
 
@@ -44,6 +46,7 @@ export async function getEditHome(req, res, next) {
     pageTitle: "Edit your Home",
     currentPage: "host-homes",
     editing: editing,
+    isLoggedIn: req.isLoggedIn
   });
 }
 
