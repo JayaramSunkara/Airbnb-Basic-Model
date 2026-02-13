@@ -1,4 +1,4 @@
-import { deleteFav, readAllFav, updateFav } from "../models/favorite.js";
+// import { deleteFav, readAllFav, updateFav } from "../models/favorite.js";
 import { findById, readAll } from "../models/home.js";
 
 export async function getHomePage(req, res, next) {

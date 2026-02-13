@@ -14,11 +14,56 @@ export async function getLogin(req, res, next) {
   });
 }
 
-export async function postLogin(req, res, next) {
-  const { email, password } = req.body;
-  const user = await User.findOne({email})
-  
-}
+export const postLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(422).render("auth/login", {
+        pageTitle: "Login",
+        currentPage: "login",
+        isLoggedIn: false,
+        errors: ["User does not exist"],
+        oldInput: { email },
+        user: {},
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(422).render("auth/login", {
+        pageTitle: "Login",
+        currentPage: "login",
+        isLoggedIn: false,
+        errors: ["Invalid Password"],
+        oldInput: { email },
+        user: {},
+      });
+    }
+
+    req.session.isLoggedIn = true;
+    req.session.user = user;
+
+    await req.session.save();
+
+    res.redirect("/");
+  } catch (err) {
+    console.error(err);
+
+    return res.status(500).render("auth/login", {
+      pageTitle: "Login",
+      currentPage: "login",
+      isLoggedIn: false,
+      errors: ["Something went wrong. Please try again."],
+      oldInput: { email: req.body.email },
+      user: {},
+    });
+  }
+};
+
 
 export async function postLogout(req, res, next) {
   req.session.destroy(() => {
