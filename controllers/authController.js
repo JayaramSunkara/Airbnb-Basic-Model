@@ -3,6 +3,9 @@ export async function getLogin(req, res, next) {
     pageTitle: "Login",
     currentPage: "login",
     isLoggedIn: false,
+    errors: [],
+    oldInput: { email: "" },
+    user: {},
   });
 }
 
@@ -18,3 +21,6 @@ export async function postLogout(req, res, next) {
     res.redirect("/login");
   });
 }
+
+export async function getSignup() {}
+export async function postSignup() {}
