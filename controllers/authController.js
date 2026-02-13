@@ -64,7 +64,6 @@ export const postLogin = async (req, res) => {
   }
 };
 
-
 export async function postLogout(req, res, next) {
   req.session.destroy(() => {
     res.redirect("/login");

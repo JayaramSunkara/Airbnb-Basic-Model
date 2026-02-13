@@ -1,83 +1,99 @@
-// import { deleteFav, readAllFav, updateFav } from "../models/favorite.js";
-import { findById, readAll } from "../models/home.js";
+import Home from "../models/Home.js";
+import User from "../models/User.js";
 
-export async function getHomePage(req, res, next) {
-  const registeredHomes = await readAll();
+export const getHomePage = async (req, res) => {
+  console.log("Session Value: ", req.session);
+
+  const registeredHomes = await Home.find();
+
   res.render("store/index", {
     registeredHomes,
     pageTitle: "airbnb Home",
     currentPage: "index",
     isLoggedIn: req.isLoggedIn,
+    user: req.session.user,
   });
-}
+};
 
-export async function getHomesList(req, res, next) {
-  const registeredHomes = await readAll();
+export const getHomesList = async (req, res) => {
+  const registeredHomes = await Home.find();
+
   res.render("store/home-list", {
     registeredHomes,
     pageTitle: "Homes List",
     currentPage: "Home",
     isLoggedIn: req.isLoggedIn,
+    user: req.session.user,
   });
-}
+};
 
-export async function getHomeDetails(req, res, next) {
-  const home = await findById(req.params.homeId);
-  if (!home) {
-    console.log("Home not found");
-    res.redirect("/homes");
-  } else {
-    res.render("store/home-detail", {
-      home: home,
-      pageTitle: "Home Detail",
-      currentPage: "Home",
-      isLoggedIn: req.isLoggedIn,
-    });
-  }
-}
-
-export async function getFavorites(req, res, next) {
-  try {
-    const favorites = await readAllFav();
-    const registeredHomes = await readAll();
-
-    const favouriteHomes = registeredHomes.filter((home) =>
-      favorites.some((fav) => fav.houseId.toString() === home.id.toString()),
-    );
-
-    res.render("store/favourite-list.ejs", {
-      favouriteHomes,
-      pageTitle: "My Favourites",
-      currentPage: "favourites",
-      isLoggedIn: req.isLoggedIn,
-    });
-  } catch (error) {
-    console.error("Unable to get favorites: ", error.message);
-  }
-}
-
-export async function getBookings(req, res, next) {
-  res.render("store/bookings.ejs", {
+export const getBookings = (req, res) => {
+  res.render("store/bookings", {
     pageTitle: "My Bookings",
     currentPage: "bookings",
     isLoggedIn: req.isLoggedIn,
+    user: req.session.user,
   });
-}
+};
 
-export async function postAddFavorites(req, res, next) {
-  try {
-    await updateFav(req.body.id);
-  } catch (error) {
-    console.error("Unable to add to favorites: ", error.message);
-  }
-  res.redirect("/favourites");
-}
+export const getFavorites = async (req, res) => {
+  const userId = req.session.user._id;
 
-export async function postDeleteFavorites(req, res, next) {
-  try {
-    await deleteFav(req.params.homeId);
-  } catch (error) {
-    console.error("Unable to delete from favorites: ", error.message);
+  const user = await User.findById(userId).populate("favourites");
+
+  res.render("store/favourite-list", {
+    favouriteHomes: user.favourites,
+    pageTitle: "My Favourites",
+    currentPage: "favourites",
+    isLoggedIn: req.isLoggedIn,
+    user: req.session.user,
+  });
+};
+
+export const postAddFavorites = async (req, res) => {
+  const homeId = req.body.id;
+  const userId = req.session.user._id;
+
+  const user = await User.findById(userId);
+
+  if (!user.favourites.includes(homeId)) {
+    user.favourites.push(homeId);
+    await user.save();
   }
+
   res.redirect("/favourites");
-}
+};
+
+export const postDeleteFavorites = async (req, res) => {
+  const homeId = req.params.homeId;
+  const userId = req.session.user._id;
+
+  const user = await User.findById(userId);
+
+  if (user.favourites.includes(homeId)) {
+    user.favourites = user.favourites.filter((fav) => fav != homeId);
+
+    await user.save();
+  }
+
+  res.redirect("/favourites");
+};
+
+export const getHomeDetails = async (req, res) => {
+  const homeId = req.params.homeId;
+
+  const home = await Home.findById(homeId);
+
+  if (!home) {
+    console.log("Home not found");
+    return res.redirect("/homes");
+  }
+
+  res.render("store/home-detail", {
+    home,
+    pageTitle: "Home Detail",
+    currentPage: "Home",
+    isLoggedIn: req.isLoggedIn,
+    user: req.session.user,
+  });
+};
