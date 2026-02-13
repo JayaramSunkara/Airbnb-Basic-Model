@@ -1,6 +1,8 @@
 import { check, validationResult } from "express-validator";
 import bcrypt from "bcryptjs";
 
+import User from "../models/User.js";
+
 export async function getLogin(req, res, next) {
   res.render("auth/login", {
     pageTitle: "Login",
@@ -14,6 +16,8 @@ export async function getLogin(req, res, next) {
 
 export async function postLogin(req, res, next) {
   const { email, password } = req.body;
+  const user = await User.findOne({email})
+  
 }
 
 export async function postLogout(req, res, next) {
