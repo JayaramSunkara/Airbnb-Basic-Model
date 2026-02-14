@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 
 import User from "../models/User.js";
 
-export async function getLogin(req, res, next) {
+export const getLogin = (req, res) => {
   res.render("auth/login", {
     pageTitle: "Login",
     currentPage: "login",
@@ -47,7 +47,13 @@ export const postLogin = async (req, res) => {
     req.session.isLoggedIn = true;
     req.session.user = user;
 
-    await req.session.save();
+    try {
+      await req.session.save();
+      console.log("session saved successfully");
+    } catch (error) {
+      console.error("Session save failed:", error);
+      return res.status(500).send("Login failed");
+    }
 
     res.redirect("/");
   } catch (err) {
@@ -64,13 +70,13 @@ export const postLogin = async (req, res) => {
   }
 };
 
-export async function postLogout(req, res, next) {
+export const postLogout = async(req, res) => {
   req.session.destroy(() => {
     res.redirect("/login");
   });
 }
 
-export async function getSignup(req, res, next) {
+export const getSignup = (req, res) => {
   res.render("auth/signup", {
     pageTitle: "Signup",
     currentPage: "signup",

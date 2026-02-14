@@ -57,7 +57,7 @@ app.use("/host", hostRouter);
 /* 404 */
 app.use(page404);
 
-/* DB + Server */
+/* DB */
 await connectDB();
 
 const PORT = process.env.PORT || 3001;

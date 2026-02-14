@@ -2,13 +2,11 @@ import Home from "../models/Home.js";
 import User from "../models/User.js";
 
 export const getHomePage = async (req, res) => {
-  console.log("Session Value: ", req.session);
-
   const registeredHomes = await Home.find();
 
   res.render("store/index", {
     registeredHomes,
-    pageTitle: "airbnb Home",
+    pageTitle: "Airbnb Home",
     currentPage: "index",
     isLoggedIn: req.isLoggedIn,
     user: req.session.user,
